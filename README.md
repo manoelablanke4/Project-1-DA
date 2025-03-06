@@ -1,5 +1,10 @@
 # Urban Navigation Path-Planning Tool - Project 1 DA
 
+## **Group Members**
+- XXXX - XXXXX
+- Manoela Blanke Américo - up202201391
+- XXXX - XXXX
+- 
 ## Project Overview
 
 This project aims to develop a path-planning tool to assist with urban navigation, similar to GPS-based systems like Google Maps, with an emphasis on environmentally sustainable and resilient mobility alternatives. The tool is designed to provide various functionalities that enhance urban mobility, such as:
