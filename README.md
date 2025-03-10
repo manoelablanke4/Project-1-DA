@@ -3,7 +3,7 @@
 ## **Group Members**
 - Cosme José Pinheiro de Sousa - up202305463
 - Manoela Blanke Américo - up202201391
-- XXXX - XXXX
+- Ricardo Alexandre Ribeiro Fernandes - up202304126
 - 
 ## Project Overview
 
@@ -15,6 +15,3 @@ This project aims to develop a path-planning tool to assist with urban navigatio
 - **Environmentally-Friendly Routes**: Generating routes that combine driving and walking, including parking options, to reduce environmental impact.
 
 The tool also accommodates constraints such as the unavailability of certain routes, ensuring practical and versatile solutions for diverse mobility needs. The ultimate goal of the project is to deliver a navigation system that prioritizes both efficiency and sustainability in urban mobility.
-
-
-
