@@ -1,7 +1,7 @@
 # Urban Navigation Path-Planning Tool - Project 1 DA
 
 ## **Group Members**
-- XXXX - XXXXX
+- Cosme José Pinheiro de Sousa - up202305463
 - Manoela Blanke Américo - up202201391
 - XXXX - XXXX
 - 
