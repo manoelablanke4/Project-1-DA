@@ -17,7 +17,7 @@ bool operator==(const Location& a,const Location& other)  {
   return a.id == other.id;
 }
 
-int main(){
+Graph<Location> createMap(){
 Graph<Location> map;
 std::ifstream LocationsFile("/Users/cosme/CLionProjects/Project-1-DA/for_Students/Locations.csv");
 
@@ -74,6 +74,8 @@ while(std::getline(LocationsFile, line)){
   }
 
   DistancesFile.close();
-return 0;
+
+
+return map;
 }
 
