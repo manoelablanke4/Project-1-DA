@@ -9,7 +9,7 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
-#include "../data_structures/MutablePriorityQueue.h" // not needed for now
+#include "\Users\cosme\CLionProjects\Project-1-DA\data_structures/MutablePriorityQueue.h" // not needed for now
 
 template <class T>
 class Edge;
@@ -74,10 +74,11 @@ protected:
 template <class T>
 class Edge {
 public:
-    Edge(Vertex<T> *orig, Vertex<T> *dest, double w);
+    Edge(Vertex<T> *orig, Vertex<T> *dest, double w,double walk);
 
     Vertex<T> * getDest() const;
-    double getWeight() const;
+    double getDriving() const;
+    double getWalking() const;
     bool isSelected() const;
     Vertex<T> * getOrig() const;
     Edge<T> *getReverse() const;
@@ -88,7 +89,11 @@ public:
     void setFlow(double flow);
 protected:
     Vertex<T> * dest; // destination vertex
-    double weight; // edge weight, can also be used for capacity
+
+
+    double driving;// edge driving, can also be used for capacity
+
+    double walking;//edge walking time
 
     // auxiliary fields
     bool selected = false;
@@ -119,10 +124,10 @@ public:
 
     /*
      * Adds an edge to a graph (this), given the contents of the source and
-     * destination vertices and the edge weight (w).
+     * destination vertices and the edge driving (w).
      * Returns true if successful, and false if the source or destination vertex does not exist.
      */
-    bool addEdge(const T &sourc, const T &dest, double w);
+    bool addEdge(const T &sourc, const T &dest, double w,double walk);
     bool removeEdge(const T &source, const T &dest);
     bool addBidirectionalEdge(const T &sourc, const T &dest, double w);
 
@@ -157,7 +162,7 @@ template <class T>
 Vertex<T>::Vertex(T in): info(in) {}
 /*
  * Auxiliary function to add an outgoing edge to a vertex (this),
- * with a given destination vertex (d) and edge weight (w).
+ * with a given destination vertex (d) and edge driving (w).
  */
 template <class T>
 Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w) {
@@ -318,7 +323,7 @@ void Vertex<T>::deleteEdge(Edge<T> *edge) {
 /********************** Edge  ****************************/
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w): orig(orig), dest(dest), weight(w) {}
+Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w, double walk): orig(orig), dest(dest), driving(w),walking(walk) {}
 
 template <class T>
 Vertex<T> * Edge<T>::getDest() const {
@@ -326,8 +331,13 @@ Vertex<T> * Edge<T>::getDest() const {
 }
 
 template <class T>
-double Edge<T>::getWeight() const {
-    return this->weight;
+double Edge<T>::getDriving() const {
+    return this->driving;
+}
+
+template <class T>
+double Edge<T>::getWalking() const {
+  return this->walking;
 }
 
 template <class T>
@@ -438,7 +448,7 @@ bool Graph<T>::removeVertex(const T &in) {
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
 template <class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
+bool Graph<T>::addEdge(const T &sourc, const T &dest, double w,double walk) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
