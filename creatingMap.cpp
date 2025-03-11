@@ -3,6 +3,8 @@
 #include <string.h>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
+
 #include "/Users/cosme/CLionProjects/Project-1-DA/data_structures/Graph.h"
 typedef struct {
 std::string name;
@@ -24,6 +26,8 @@ if(!LocationsFile.is_open()){
   exit(1);
 }
 
+std::unordered_map<std::string, Location> locations;
+
 std::string line;
 std::getline(LocationsFile, line);
 
@@ -37,11 +41,39 @@ while(std::getline(LocationsFile, line)){
     location.code = code;
     location.parking = (parking == "1");
     map.addVertex(location);
+    locations[code]= location;
   }
 }
   LocationsFile.close();
 
+  std::ifstream DistancesFile("/Users/cosme/CLionProjects/Project-1-DA/for_Students/Distances.csv");
 
+  if(!DistancesFile.is_open()) {
+    std::cerr << "Error opening file" << std::endl;
+    exit(1);
+  }
+
+  std::getline(DistancesFile, line);
+  while(std::getline(DistancesFile, line)) {
+    std::istringstream iss(line);
+    std::string source,destination,driving,walking;
+    if (std::getline(iss, source, ',') && std::getline(iss, destination, ',') && std::getline(iss, driving,',') && std::getline(iss, walking,',')) {
+      double d,w;
+      Location s,de;
+      s=locations[source];
+      de=locations[destination];
+      if (driving=="X") {
+        d=-1;
+      }
+      else {
+        d=std::stod(driving);
+      }
+      w=stod(walking);
+      map.addBidirectionalEdge(s,de,d,w);
+    }
+  }
+
+  DistancesFile.close();
 return 0;
 }
 

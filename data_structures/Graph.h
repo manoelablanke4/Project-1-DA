@@ -45,7 +45,7 @@ public:
     void setIndegree(unsigned int indegree);
     void setDist(double dist);
     void setPath(Edge<T> *path);
-    Edge<T> * addEdge(Vertex<T> *dest, double w);
+    Edge<T> * addEdge(Vertex<T> *dest, double w,double walk);
     bool removeEdge(T in);
     void removeOutgoingEdges();
 
@@ -129,7 +129,7 @@ public:
      */
     bool addEdge(const T &sourc, const T &dest, double w,double walk);
     bool removeEdge(const T &source, const T &dest);
-    bool addBidirectionalEdge(const T &sourc, const T &dest, double w);
+    bool addBidirectionalEdge(const T &sourc, const T &dest, double w,double walk);
 
     int getNumVertex() const;
 
@@ -165,8 +165,8 @@ Vertex<T>::Vertex(T in): info(in) {}
  * with a given destination vertex (d) and edge driving (w).
  */
 template <class T>
-Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w) {
-    auto newEdge = new Edge<T>(this, d, w);
+Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w,double walk) {
+    auto newEdge = new Edge<T>(this, d, w,walk);
     adj.push_back(newEdge);
     d->incoming.push_back(newEdge);
     return newEdge;
@@ -453,7 +453,7 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double w,double walk) {
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    v1->addEdge(v2, w);
+    v1->addEdge(v2, w,walk);
     return true;
 }
 
@@ -472,13 +472,13 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 }
 
 template <class T>
-bool Graph<T>::addBidirectionalEdge(const T &sourc, const T &dest, double w) {
+bool Graph<T>::addBidirectionalEdge(const T &sourc, const T &dest, double w,double walk) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    auto e1 = v1->addEdge(v2, w);
-    auto e2 = v2->addEdge(v1, w);
+    auto e1 = v1->addEdge(v2, w,walk);
+    auto e2 = v2->addEdge(v1, w,walk);
     e1->setReverse(e2);
     e2->setReverse(e1);
     return true;
