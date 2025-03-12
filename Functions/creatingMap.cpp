@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
-#include "data_structures/Graph.h"  // Universal path
+#include "..\\data_structures\\Graph.h"  // Universal path
 
 #define INF std::numeric_limits<double>::max()
 
@@ -17,6 +17,8 @@ struct Location {
         return id == other.id;
     }
 };
+
+std::unordered_map<int,Vertex<Location>*> idmap;
 
 void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
     std::ifstream LocationsFile("for_Students/Locations.csv");
@@ -38,6 +40,7 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
             Location location{name, std::stoi(id), code, (parking == "1")};
             map.addVertex(location);
             locations[code] = map.findVertex(location);  // Storing a pointer instead of a copy
+            idmap[std::stoi(id)]=map.findVertex(location);
         }
     }
 
@@ -83,11 +86,4 @@ void createMap(Graph<Location>& map) {
 
     readLocations(map, locations);
     readDistances(map, locations);
-}
-
-int main() {
-    Graph<Location> cityGraph;  // Single instance of the graph
-    createMap(cityGraph);
-
-    return 0;
 }

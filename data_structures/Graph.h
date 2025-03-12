@@ -30,6 +30,7 @@ public:
     bool isProcessing() const;
     unsigned int getIndegree() const;
     double getDist() const;
+    double getWalkDist() const;
     Edge<T> *getPath() const;
     std::vector<Edge<T> *> getIncoming() const;
 
@@ -44,6 +45,7 @@ public:
 
     void setIndegree(unsigned int indegree);
     void setDist(double dist);
+    void setWalkDist(double walkdist);
     void setPath(Edge<T> *path);
     Edge<T> * addEdge(Vertex<T> *dest, double w,double walk);
     bool removeEdge(T in);
@@ -60,6 +62,7 @@ protected:
     int low = -1, num = -1; // used by SCC Tarjan
     unsigned int indegree; // used by topsort
     double dist = 0;
+    double walkdist = 0;
     Edge<T> *path = nullptr;
 
     std::vector<Edge<T> *> incoming; // incoming edges
@@ -264,6 +267,12 @@ double Vertex<T>::getDist() const {
     return this->dist;
 }
 
+template<class T>
+double Vertex<T>::getWalkDist() const {
+    return this->walkdist;
+}
+
+
 template <class T>
 Edge<T> *Vertex<T>::getPath() const {
     return this->path;
@@ -297,6 +306,11 @@ void Vertex<T>::setIndegree(unsigned int indegree) {
 template <class T>
 void Vertex<T>::setDist(double dist) {
     this->dist = dist;
+}
+
+template <class T>
+void Vertex<T>::setWalkDist(double walkdist) {
+    this->walkdist = walkdist;
 }
 
 template <class T>
