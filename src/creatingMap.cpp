@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
-#include "data_structures/Graph.h"  // Universal path
+#include "../include/data_structures/Graph.h" // Universal path
 
 #define INF std::numeric_limits<double>::max()
 
@@ -19,9 +19,9 @@ struct Location {
 };
 
 void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream LocationsFile("for_Students/Locations.csv");
+    std::ifstream LocationsFile("../data/Locations.csv");
     if (!LocationsFile.is_open()) {
-        std::cerr << "Error opening for_Students/Locations.csv" << std::endl;
+        std::cerr << "Error opening Locations.csv" << std::endl;
         exit(1);
     }
 
@@ -45,9 +45,9 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
 }
 
 void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream DistancesFile("for_Students/Distances.csv");
+    std::ifstream DistancesFile("../data/Distances.csv");
     if (!DistancesFile.is_open()) {
-        std::cerr << "Error opening for_Students/Distances.csv" << std::endl;
+        std::cerr << "Error opening Distances.csv" << std::endl;
         exit(1);
     }
 
