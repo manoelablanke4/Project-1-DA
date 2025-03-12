@@ -1,7 +1,8 @@
 //
 // Created by cosme on 11/03/2025.
 //
-#include "..\\Functions\\creatingMap.cpp"
+#include "..\\src\\creatingMap.cpp"
+#include "..\\include\\data_structures/MutablePriorityQueue.h"
 
 bool relax(Edge<Location> *edge) {
     Vertex<Location>* orig=edge->getOrig();
