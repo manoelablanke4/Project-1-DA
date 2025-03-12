@@ -21,7 +21,7 @@ struct Location {
 std::unordered_map<int,Vertex<Location>*> idmap;
 
 void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream LocationsFile("../data/Locations.csv");
+    std::ifstream LocationsFile("./data/Locations.csv");
     if (!LocationsFile.is_open()) {
         std::cerr << "Error opening Locations.csv" << std::endl;
         exit(1);
@@ -48,7 +48,7 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
 }
 
 void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream DistancesFile("../data/Distances.csv");
+    std::ifstream DistancesFile("./data/Distances.csv");
     if (!DistancesFile.is_open()) {
         std::cerr << "Error opening Distances.csv" << std::endl;
         exit(1);
