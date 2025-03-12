@@ -9,7 +9,7 @@
 #include <queue>
 #include <limits>
 #include <algorithm>
-#include "\Users\cosme\CLionProjects\Project-1-DA\data_structures/MutablePriorityQueue.h" // not needed for now
+#include "MutablePriorityQueue.h" // not needed for now
 
 template <class T>
 class Edge;
