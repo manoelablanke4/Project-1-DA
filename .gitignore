@@ -6,6 +6,7 @@ build/
 
 # Input File
 input.txt
+output.txt
 
 # Outros exemplos
 *.swp
