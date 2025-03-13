@@ -4,8 +4,8 @@ build/
 # Configurações do CLion/IntelliJ
 .idea/
 
-# Executavel
-src/main
+# Input File
+input.txt
 
 # Outros exemplos
 *.swp
