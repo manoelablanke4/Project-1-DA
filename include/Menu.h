@@ -6,6 +6,10 @@
 #include "../include/data_structures/Graph.h"
 
 void handleMenuSelection();
-void planFastestRoute(int origin, int destination, bool altPath);
+IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAltPath);
+RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
+                                             const std::unordered_set<int>& ignoreVertex,
+                                             const std::vector<std::pair<int, int>>& avoidSegments,
+                                             int include);
 
 #endif // MENU_H

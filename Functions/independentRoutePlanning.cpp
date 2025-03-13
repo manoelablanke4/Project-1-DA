@@ -8,43 +8,66 @@
 #include "../include/IndependentRoutePlanning.h"
 #include "../include/RoutePlanningUtils.h"
 
-void planFastestRoute(int origin, int destination, bool doAltPath) {
+IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAltPath) {
     Graph<Location> cityGraph;  // Single instance of the graph
     createMap(cityGraph);
-    std::unordered_set<int> frstpath; // set where we will store the  nodes that are part of the shortest path
-    dijkstra(&cityGraph,origin,frstpath);
-    double besttime=0;
-    std::vector<int> bestPath=getBestPath(&cityGraph,origin,destination,besttime);
-    if (bestPath.empty()) {
-        std::cout<<"No Path Found"<<std::endl;
+
+    std::unordered_set<int> frstpath; // Stores the nodes that are part of the shortest path
+    dijkstra(&cityGraph, origin, frstpath);
+
+    IndependentRoutesResult result;
+    result.bestTime = 0;
+    result.bestPath = getBestPath(&cityGraph, origin, destination, result.bestTime);
+
+    // If no best path found, return early
+    result.foundBest = !result.bestPath.empty();
+    if (!result.foundBest) {
+        return result;
+    }
+
+    // Store nodes in shortest path to avoid in alternative path calculation
+    for (size_t i = 1; i < result.bestPath.size() - 1; i++) {
+        frstpath.insert(result.bestPath[i]);
+    }
+
+    if (doAltPath) {
+        result.altTime = 0;
+        dijkstra(&cityGraph, origin, frstpath);
+        result.altPath = getBestPath(&cityGraph, origin, destination, result.altTime);
+        result.foundAlt = !result.altPath.empty(); // Set true if altPath exists
+    }
+
+    return result;
+}
+
+void outputIndependentRouteResult(const IndependentRoutesResult& result, std::ostream& out, const int origin, const int destination) {
+    out << "Source:" << origin << "\n";
+    out << "Destination:" << destination << "\n";
+
+    if (!result.foundBest) {
+        out << "No Path Found\n";
         return;
     }
-    for (int i=1;i<bestPath.size()-1;i++) {
-        frstpath.insert(bestPath[i]);
-    }
-    double alttime=0;
-    dijkstra(&cityGraph,origin,frstpath);
-    std::vector<int> altPath=getBestPath(&cityGraph,origin,destination,alttime);
-    std::cout << "Best Path: ";
-    for (size_t i = 0; i < bestPath.size(); i++) {
-        std::cout << bestPath[i];
-        if (i < bestPath.size() - 1) {
-            std::cout << "->";
+
+    // Format Best Route
+    out << "BestDrivingRoute:";
+    for (size_t i = 0; i < result.bestPath.size(); i++) {
+        out << result.bestPath[i];
+        if (i < result.bestPath.size() - 1) {
+            out << ",";
         }
     }
-    std::cout << "\n" << "Best Time: " << besttime << std::endl;
+    out << "(" << result.bestTime << ")\n";
 
-    if(doAltPath){
-        std::cout << "Alt Path: ";
-        for (size_t i = 0; i < altPath.size(); i++) {
-            std::cout << altPath[i];
-            if (i < altPath.size() - 1) {
-                std::cout << "->";
+    // Format Alternative Route (if exists)
+    if (result.foundAlt) {
+        out << "AlternativeDrivingRoute:";
+        for (size_t i = 0; i < result.altPath.size(); i++) {
+            out << result.altPath[i];
+            if (i < result.altPath.size() - 1) {
+                out << ",";
             }
         }
-        std::cout << "\n" << "Alt Time: " << alttime << std::endl;
+        out << "(" << result.altTime << ")\n";
     }
-    else std::cout<<std::endl;
-
-    return;
 }

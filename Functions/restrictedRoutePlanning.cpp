@@ -10,27 +10,26 @@
 #include <algorithm>
 #include <iostream>
 
-void excludeNodesOrSegments(int origin, int destination,
-                            const std::unordered_set<int>& ignoreVertex,
-                            const std::vector<std::pair<int,int>>& avoidSegments,
-                            int include) {
+RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
+                                             const std::unordered_set<int>& ignoreVertex,
+                                             const std::vector<std::pair<int, int>>& avoidSegments,
+                                             int include) {
     Graph<Location> cityGraph;
     createMap(cityGraph);
 
-    // Local copy, because we'll modify it
-    std::unordered_set<int> localIgnoreVertex = ignoreVertex;
+    RestrictedRoutesResult result;
+
 
     // Ignore custom segments from 'avoidSegments'
     for (auto &seg : avoidSegments) {
         int fromID = seg.first;
-        int toID   = seg.second;
+        int toID = seg.second;
 
         Vertex<Location>* fromV = nullptr;
-        // check if fromID is known
         if (idmap.find(fromID) != idmap.end()) {
             fromV = idmap[fromID];
         }
-        if (!fromV) continue; // if we didn't find a vertex or it's null, skip
+        if (!fromV) continue; // Skip if the vertex is not found
 
         // Mark the edge (fromID -> toID) as ignored
         for (auto e : fromV->getAdj()) {
@@ -40,26 +39,19 @@ void excludeNodesOrSegments(int origin, int destination,
         }
     }
 
-    // No include input
+    // No include input (Standard Restricted Route)
     if (include == -1) {
-        double time = 0.0;
-        dijkstra(&cityGraph, origin, localIgnoreVertex);
+        result.bestTime = 0.0;
+        dijkstra(&cityGraph, origin, ignoreVertex);
 
-        std::vector<int> bestPath = getBestPath(&cityGraph, origin, destination, time);
-        if (bestPath.empty()) {
-            std::cout << "No Path Found" << std::endl;
-            return;
+        result.bestPath = getBestPath(&cityGraph, origin, destination, result.bestTime);
+        if (result.bestPath.empty()) {
+            result.pathFound = false;
+        } else {
+            result.pathFound = true;
         }
 
-        std::cout << "Best Path: ";
-        for (size_t i = 0; i < bestPath.size(); i++) {
-            std::cout << bestPath[i];
-            if (i < bestPath.size() - 1) {
-                std::cout << "->";
-            }
-        }
-        std::cout << "\nTime: " << time << std::endl;
-        return;
+        return result;
     }
 
     // ------------------------------------------------------------------
@@ -67,38 +59,49 @@ void excludeNodesOrSegments(int origin, int destination,
     // ------------------------------------------------------------------
 
     // 1) origin -> include
-    double firstTime = 0.0;
-    dijkstra(&cityGraph, origin, localIgnoreVertex);
-    std::vector<int> firstPath = getBestPath(&cityGraph, origin, include, firstTime);
+    result.bestTime = 0.0;
+    dijkstra(&cityGraph, origin, ignoreVertex);
+    result.bestPath = getBestPath(&cityGraph, origin, include, result.bestTime);
 
-    if (firstPath.empty()) {
-        std::cout << "No Path Found (origin -> include)" << std::endl;
-        return;
+    if (result.bestPath.empty()) {
+        result.pathFound = false;
+        return result;
     }
 
-
-    // 3) include -> destination
+    // 2) include -> destination
     double secondTime = 0.0;
-    dijkstra(&cityGraph, include, localIgnoreVertex);
+    dijkstra(&cityGraph, include, ignoreVertex);
     std::vector<int> secondPath = getBestPath(&cityGraph, include, destination, secondTime);
 
     if (secondPath.empty()) {
-        std::cout << "No Path Found (include -> destination)" << std::endl;
-        return;
+        result.pathFound = false;
+        return result;
     }
 
-    secondPath.erase(secondPath.begin());
+    secondPath.erase(secondPath.begin()); // Remove duplicate "include" node
+    result.bestPath.insert(result.bestPath.end(), secondPath.begin(), secondPath.end());
+    result.bestTime += secondTime;
+    result.pathFound = true;
 
-    firstPath.insert(firstPath.end(), secondPath.begin(), secondPath.end());
-    double totalTime = firstTime + secondTime;
-
-    std::cout << "Best Path with Include: ";
-    for (size_t i = 0; i < firstPath.size(); i++) {
-        std::cout << firstPath[i];
-        if (i < firstPath.size() - 1) {
-            std::cout << "->";
-        }
-    }
-    std::cout << "\nTotal Time: " << totalTime << std::endl;
+    return result;
 }
 
+void outputRestrictedRouteResult(const RestrictedRoutesResult& result, std::ostream& out,
+                                 int origin, int destination) {
+    out << "Source:" << origin << "\n";
+    out << "Destination:" << destination << "\n";
+
+    // Print Restricted Driving Route
+    if (!result.bestPath.empty()) {
+        out << "RestrictedDrivingRoute:";
+        for (size_t i = 0; i < result.bestPath.size(); i++) {
+            out << result.bestPath[i];
+            if (i < result.bestPath.size() - 1) {
+                out << ",";
+            }
+        }
+        out << "(" << result.bestTime << ")\n";
+    } else {
+        out << "RestrictedDrivingRoute:No Path Found\n";
+    }
+}

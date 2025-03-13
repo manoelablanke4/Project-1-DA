@@ -1,6 +1,3 @@
-#include <iostream>
-#include <string>
-#include <limits>
 #include "../include/Menu.h"
 
 int main() {
