@@ -1,11 +1,17 @@
 #include <iostream>
 #include <string>
 #include <limits>
-#include "../include/menu.h"
+#include "../include/Menu.h"
 
 // Function must be developed here
-void planFastestRoute() {
-    std::cout << "Planning the fastest route...\n";
+void planFastestRouteMenu() {
+    int origin, destination;
+    std::cout << "Enter the origin location ID: ";
+    std::cin >> origin;
+    std::cout << "Enter the destination location ID: ";
+    std::cin >> destination;
+
+    planFastestRoute(origin, destination);
 }
 
 void planSecondFastestRoute() {
@@ -55,7 +61,7 @@ void handleMenuSelection() {
 
         switch (choice) {
             case 1:
-                planFastestRoute();
+                planFastestRouteMenu();
                 break;
             case 2:
                 planSecondFastestRoute();
