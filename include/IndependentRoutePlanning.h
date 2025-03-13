@@ -1,8 +1,6 @@
-//
-// Created by root on 3/13/25.
-//
+#ifndef INDEPENDENT_ROUTE_PLANNING_H
+#define INDEPENDENT_ROUTE_PLANNING_H
 
-#ifndef INDEPENDENTROUTEPLANNING_H
-#define INDEPENDENTROUTEPLANNING_H
+void planFastestRoute(int origin, int destination);
 
-#endif //INDEPENDENTROUTEPLANNING_H
+#endif // INDEPENDENT_ROUTE_PLANNING_H

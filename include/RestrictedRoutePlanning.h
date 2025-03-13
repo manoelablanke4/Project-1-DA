@@ -1,8 +1,10 @@
-//
-// Created by root on 3/13/25.
-//
+#ifndef RESTRICTED_ROUTE_PLANNING_H
+#define RESTRICTED_ROUTE_PLANNING_H
 
-#ifndef RESTRICTEDROUTEPLANNING_H
-#define RESTRICTEDROUTEPLANNING_H
+#include <unordered_set>
+#include <vector>
+#include "../include/data_structures/Graph.h"
 
-#endif //RESTRICTEDROUTEPLANNING_H
+void excludeNodesOrSegments(int origin, int destination, const std::unordered_set<int>& ignoreVertex, const std::vector<std::pair<int,int>>& avoidSegments, int include);
+
+#endif // RESTRICTED_ROUTE_PLANNING_H

@@ -3,98 +3,68 @@
 //
 #include <unordered_set>
 
-#include "..\\src\\creatingMap.cpp"
-#include "..\\include\\data_structures/MutablePriorityQueue.h"
+#include "../include/CreatingMap.h"
+#include "../include/data_structures/MutablePriorityQueue.h"
+#include "../include/RestrictedRoutePlanning.h"
+#include "../include/RoutePlanningUtils.h"
+#include <algorithm>
+#include <iostream>
 
-bool relax(Edge<Location> *edge) {
-    Vertex<Location>* orig=edge->getOrig();
-    Vertex<Location>* dest=edge->getDest();
-    if (dest->getDist()>(orig->getDist()+edge->getDriving())) {
-        dest->setDist(orig->getDist()+edge->getDriving());
-        dest->setPath(edge);
-        return true;
-    }
-    return false;
-}
+void excludeNodesOrSegments(int origin, int destination,
+                            const std::unordered_set<int>& ignoreVertex,
+                            const std::vector<std::pair<int,int>>& avoidSegments,
+                            int include) {
+    Graph<Location> cityGraph;
+    createMap(cityGraph);
 
-void dijkstra(Graph<Location> * g, const int &origin,std::unordered_set<int> ignoreVertex) {
-    for (auto v:g->getVertexSet()) {
-        v->setDist(INF);
-        v->setPath(nullptr);
-    }
-    Vertex<Location>* s=idmap[origin];
-    s->setDist(0);
-    MutablePriorityQueue<Vertex<Location>> pq;
-    pq.insert(s);
-    while (!pq.empty()) {
-        Vertex<Location>* v=pq.extractMin();
-        for (auto e:v->getAdj()) {
-            if (e->getDriving()!=INF && ignoreVertex.find(e->getDest()->getInfo().id) == ignoreVertex.end() && !e->getIgnored()) {
-                double oldDist=e->getDest()->getDist();
-                if (relax(e)) {
-                    if (oldDist==INF) {
-                        pq.insert(e->getDest());
-                    }
-                    else {
-                        pq.decreaseKey(e->getDest());
-                    }
-                }
+    // Local copy, because we'll modify it
+    std::unordered_set<int> localIgnoreVertex = ignoreVertex;
+
+    // Ignore custom segments from 'avoidSegments'
+    for (auto &seg : avoidSegments) {
+        int fromID = seg.first;
+        int toID   = seg.second;
+
+        Vertex<Location>* fromV = nullptr;
+        if (idmap.find(fromID) != idmap.end()) {
+            fromV = idmap[fromID];
+        }
+        if (!fromV) continue;
+
+        for (auto e : fromV->getAdj()) {
+            if (e->getDest()->getInfo().id == toID) {
+                e->setIgnored(true);
             }
         }
     }
-}
 
-static std::vector<int> getBestPath(Graph<Location> *g,const int &origin,const int &dest,double &time) {
-    std::vector<int> res;
-    Vertex<Location>* d=idmap[dest];
-    res.push_back(d->getInfo().id);
-    while (d->getPath()!=nullptr ) {
-        time+=d->getPath()->getDriving();
-        d=d->getPath()->getOrig();
-        res.push_back(d->getInfo().id);
+    double time = 0.0;
+    dijkstra(&cityGraph, origin, localIgnoreVertex);
+
+    // We'll declare bestPath
+    std::vector<int> bestPath;
+
+    // If include != -1 (no input), let's get bestPath from 'origin' to 'include'
+    // otherwise from 'origin' to 'destination'
+    if (include != -1) {
+        bestPath = getBestPath(&cityGraph, origin, include, time);
+    } else {
+        bestPath = getBestPath(&cityGraph, origin, destination, time);
     }
-    reverse(res.begin(),res.end());
-    return res;
 
-}
-
-int main() {
-    Graph<Location> cityGraph;  // Single instance of the graph
-    createMap(cityGraph);
-    int origin=3;
-    std::unordered_set<int> ignoreVertex; // set where we will store the  nodes to be ignored
-    ignoreVertex.insert(1211);
-    for(auto v:cityGraph.getVertexSet()) {
-      if(v->getInfo().id==3) {
-        for(auto e:v->getAdj()) {
-          if(e->getDest()->getInfo().id==1064) {
-            e->setIgnored(true);
-          }
-        }
-      }
-    }
-    int include=7;
-    dijkstra(&cityGraph,origin,ignoreVertex);
-    double time=0;
-    std::vector<int> bestPath=getBestPath(&cityGraph,origin,include,time); //primeiro fazemos um djisktra do
     if (bestPath.empty()) {
-        std::cout<<"No Path Found"<<std::endl;
-        return 0;
+        std::cout << "No Path Found" << std::endl;
+        return;
     }
-    double scndTime=0;
-    for (auto v:bestPath) {
-        if (v!=include) {
-            ignoreVertex.insert(v);
+
+    std::cout << "Best Path: ";
+    for (size_t i = 0; i < bestPath.size(); i++) {
+        std::cout << bestPath[i];
+        if (i < bestPath.size() - 1) {
+            std::cout << "->";
         }
     }
-    dijkstra(&cityGraph,include,ignoreVertex);
-    std::vector<int> scndPath=getBestPath(&cityGraph,include,8,scndTime);
-    bestPath.insert(bestPath.end(),scndPath.begin()+1,scndPath.end());
-    std::cout<<"Best Path: ";
-    for (auto v:bestPath) {
-        std::cout<<v<<"->";
-    }
-    std::cout<<"\n"<<time<<std::endl;
+    std::cout << "\nTime: " << time << std::endl;
 
-    return 0;
 }
+
