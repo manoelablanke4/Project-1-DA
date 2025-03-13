@@ -3,6 +3,10 @@ cmake-build-debug/
 build/
 # Configurações do CLion/IntelliJ
 .idea/
+
+# Executavel
+src/main
+
 # Outros exemplos
 *.swp
 *.swo
