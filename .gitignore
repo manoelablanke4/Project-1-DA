@@ -1,0 +1,9 @@
+# Arquivos e pastas de build
+cmake-build-debug/
+build/
+# Configurações do CLion/IntelliJ
+.idea/
+# Outros exemplos
+*.swp
+*.swo
+*.user
