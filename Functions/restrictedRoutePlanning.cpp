@@ -73,16 +73,23 @@ int main() {
         }
       }
     }
+    int include=7;
     dijkstra(&cityGraph,origin,ignoreVertex);
     double time=0;
-    std::vector<int> bestPath=getBestPath(&cityGraph,origin,8,time);
+    std::vector<int> bestPath=getBestPath(&cityGraph,origin,include,time); //primeiro fazemos um djisktra do
     if (bestPath.empty()) {
         std::cout<<"No Path Found"<<std::endl;
         return 0;
     }
-    double alttime=0;
-    dijkstra(&cityGraph,origin,ignoreVertex);
-    std::vector<int> altPath=getBestPath(&cityGraph,origin,8,alttime);
+    double scndTime=0;
+    for (auto v:bestPath) {
+        if (v!=include) {
+            ignoreVertex.insert(v);
+        }
+    }
+    dijkstra(&cityGraph,include,ignoreVertex);
+    std::vector<int> scndPath=getBestPath(&cityGraph,include,8,scndTime);
+    bestPath.insert(bestPath.end(),scndPath.begin()+1,scndPath.end());
     std::cout<<"Best Path: ";
     for (auto v:bestPath) {
         std::cout<<v<<"->";
