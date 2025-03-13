@@ -19,7 +19,6 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
 
     RestrictedRoutesResult result;
 
-
     // Ignore custom segments from 'avoidSegments'
     for (auto &seg : avoidSegments) {
         int fromID = seg.first;
@@ -39,52 +38,52 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
         }
     }
 
-    // No include input (Standard Restricted Route)
+    // Case 1: Standard Restricted Route (No Include)
     if (include == -1) {
         result.bestTime = 0.0;
         dijkstra(&cityGraph, origin, ignoreVertex);
-
         result.bestPath = getBestPath(&cityGraph, origin, destination, result.bestTime);
-        if (result.bestPath.empty()) {
-            result.pathFound = false;
-        } else {
-            result.pathFound = true;
-        }
 
+        result.pathFound = !result.bestPath.empty();
         return result;
     }
 
-    // ------------------------------------------------------------------
-    // If include != -1, we want: origin -> include -> destination
-    // ------------------------------------------------------------------
+    // -----------------------------------------
+    // Case 2: Restricted Route with Include
+    // -----------------------------------------
 
-    // 1) origin -> include
-    result.bestTime = 0.0;
+    std::vector<int> pathToInclude, pathFromInclude;
+    double timeToInclude = 0.0, timeFromInclude = 0.0;
+
+    // Step 1: Compute origin → include
     dijkstra(&cityGraph, origin, ignoreVertex);
-    result.bestPath = getBestPath(&cityGraph, origin, include, result.bestTime);
+    pathToInclude = getBestPath(&cityGraph, origin, include, timeToInclude);
 
-    if (result.bestPath.empty()) {
+    if (pathToInclude.empty()) {
         result.pathFound = false;
         return result;
     }
 
-    // 2) include -> destination
-    double secondTime = 0.0;
+    // Step 2: Compute include → destination
     dijkstra(&cityGraph, include, ignoreVertex);
-    std::vector<int> secondPath = getBestPath(&cityGraph, include, destination, secondTime);
+    pathFromInclude = getBestPath(&cityGraph, include, destination, timeFromInclude);
 
-    if (secondPath.empty()) {
+    if (pathFromInclude.empty()) {
         result.pathFound = false;
         return result;
     }
 
-    secondPath.erase(secondPath.begin()); // Remove duplicate "include" node
-    result.bestPath.insert(result.bestPath.end(), secondPath.begin(), secondPath.end());
-    result.bestTime += secondTime;
+    // Step 3: Merge both paths (removing duplicate "include" node)
+    pathFromInclude.erase(pathFromInclude.begin());
+    result.bestPath.insert(result.bestPath.end(), pathToInclude.begin(), pathToInclude.end());
+    result.bestPath.insert(result.bestPath.end(), pathFromInclude.begin(), pathFromInclude.end());
+
+    result.bestTime = timeToInclude + timeFromInclude;
     result.pathFound = true;
 
     return result;
 }
+
 
 void outputRestrictedRouteResult(const RestrictedRoutesResult& result, std::ostream& out,
                                  int origin, int destination) {

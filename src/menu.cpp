@@ -304,7 +304,6 @@ void handleRestrictedOption() {
     }
 }
 
-
 void showMainMenu() {
     std::cout << "=================================================================================================" << std::endl;
     std::cout << "### Welcome to the Route Planning Tool! ###" << std::endl;
