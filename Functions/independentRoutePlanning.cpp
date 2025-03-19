@@ -34,7 +34,7 @@ IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAlt
         result.altTime = 0;
         dijkstra(&cityGraph, origin, frstpath);
         result.altPath = getBestPath(&cityGraph, origin, destination, result.altTime);
-        result.foundAlt = !result.altPath.empty(); // Set true if altPath exists
+        result.foundAlt = !result.altPath.empty() && result.bestPath!=result.altPath; // Set true if altPath exists
     }
 
     return result;
@@ -69,5 +69,12 @@ void outputIndependentRouteResult(const IndependentRoutesResult& result, std::os
             }
         }
         out << "(" << result.altTime << ")\n";
+    }
+
+    //In case there's no alternative route
+    if (!result.foundAlt) {
+        out << "AlternativeDrivingRoute:";
+        out << "No Alternative Path Found\n";
+        return;
     }
 }
