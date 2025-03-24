@@ -1,17 +1,27 @@
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
 #include "../include/data_structures/Graph.h"
-#include "../include/CreatingMap.h"
 
 #define INF std::numeric_limits<double>::max()
 
-// Define the global variable (declared as extern in CreatingMap.h)
-std::unordered_map<int, Vertex<Location>*> idmap;
+struct Location {
+    std::string name;
+    int id;
+    std::string code;
+    int parking;
+
+    bool operator==(const Location& other) const {
+        return id == other.id;
+    }
+};
+
+std::unordered_map<int,Vertex<Location>*> idmap;
 
 void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream LocationsFile("../data/Locations.csv");
+    std::ifstream LocationsFile("../data/LocSample.txt");
     if (!LocationsFile.is_open()) {
         std::cerr << "Error opening Locations.csv" << std::endl;
         exit(1);
@@ -26,19 +36,17 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
 
         if (std::getline(iss, name, ',') && std::getline(iss, id, ',') &&
             std::getline(iss, code, ',') && std::getline(iss, parking, ',')) {
-
-            Location location{name, std::stoi(id), code, (parking == "1")};
+            Location location{name, std::stoi(id), code, std::stoi(parking)};
             map.addVertex(location);
-            locations[code] = map.findVertex(location);
-            idmap[std::stoi(id)] = map.findVertex(location);
+            locations[code] = map.findVertex(location);  // Storing a pointer instead of a copy
+            idmap[std::stoi(id)]=map.findVertex(location);
         }
     }
-
     LocationsFile.close();
 }
 
 void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream DistancesFile("../data/Distances.csv");
+    std::ifstream DistancesFile("../data/DisSample.txt");
     if (!DistancesFile.is_open()) {
         std::cerr << "Error opening Distances.csv" << std::endl;
         exit(1);
@@ -57,18 +65,22 @@ void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<
             double driveTime = (driving == "X") ? INF : std::stod(driving);
             double walkTime = std::stod(walking);
 
+            // Retrieving pointers to real vertices instead of copies
             Vertex<Location>* src = locations[source];
             Vertex<Location>* dest = locations[destination];
 
             if (src && dest) {
+
                 map.addBidirectionalEdge(src->getInfo(), dest->getInfo(), driveTime, walkTime);
             }
         }
     }
 
+
     DistancesFile.close();
 }
 
+// Graph is now passed by reference to avoid creating multiple instances
 void createMap(Graph<Location>& map) {
     std::unordered_map<std::string, Vertex<Location>*> locations;
 
