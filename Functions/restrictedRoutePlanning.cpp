@@ -41,7 +41,7 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
     // Case 1: Standard Restricted Route (No Include)
     if (include == -1) {
         result.bestTime = 0.0;
-        dijkstra(&cityGraph, origin, ignoreVertex);
+        dijkstra(&cityGraph, origin, false, false, ignoreVertex);
         result.bestPath = getBestPath(&cityGraph, origin, destination, result.bestTime);
 
         result.pathFound = !result.bestPath.empty();
@@ -56,7 +56,7 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
     double timeToInclude = 0.0, timeFromInclude = 0.0;
 
     // Step 1: Compute origin → include
-    dijkstra(&cityGraph, origin, ignoreVertex);
+    dijkstra(&cityGraph, origin, false, false, ignoreVertex);
     pathToInclude = getBestPath(&cityGraph, origin, include, timeToInclude);
 
     if (pathToInclude.empty()) {
@@ -65,7 +65,7 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
     }
 
     // Step 2: Compute include → destination
-    dijkstra(&cityGraph, include, ignoreVertex);
+    dijkstra(&cityGraph, include, false, false, ignoreVertex);
     pathFromInclude = getBestPath(&cityGraph, include, destination, timeFromInclude);
 
     if (pathFromInclude.empty()) {

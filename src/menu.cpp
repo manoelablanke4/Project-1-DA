@@ -8,6 +8,7 @@
 #include "../include/Menu.h"
 #include "../include/RestrictedRoutePlanning.h"
 #include "../include/IndependentRoutePlanning.h"
+#include "../include/envFriendlyRoutePlanning.h"
 
 
 // Function for manual fastest route input
@@ -46,7 +47,6 @@ void planFastestRouteBatch() {
     }
 
     std::string line;
-    std::string mode;
     int origin = -1, destination = -1;
 
     while (std::getline(inputFile, line)) {
@@ -69,7 +69,6 @@ void planFastestRouteBatch() {
 
         // Process based on label
         if (label == "Mode") {
-            mode = value;
         } else if (label == "Source") {
             try {
                 origin = std::stoi(value);
@@ -94,6 +93,153 @@ void planFastestRouteBatch() {
     inputFile.close();
     outputFile.close();
 }
+
+// Function for manual environmental friendly route input
+void planEnvironmentallyFriendlyRouteMenu() {
+    int origin, destination, maxWalkTime;
+    std::unordered_set<int> avoidNodes;
+    std::vector<std::pair<int, int>> avoidSegments;
+    std::string input;
+
+    std::cout << "Enter the origin location ID: ";
+    std::cin >> origin;
+    std::cout << "Enter the destination location ID: ";
+    std::cin >> destination;
+    std::cout << "Enter the maximum walking time: ";
+    std::cin >> maxWalkTime;
+
+    // Nodes to avoid
+    std::cout << "Enter nodes to avoid (format: x,z,y) or press Enter for none: ";
+    getline(std::cin, input);
+    if (!input.empty()) {
+        std::stringstream ss(input);
+        std::string node;
+        while (getline(ss, node, ',')) {
+            avoidNodes.insert(std::stoi(node));
+        }
+    }
+
+    // Segments to avoid
+    std::cout << "Enter segments to avoid (format: (x,y),(a,b)) or press Enter for none: ";
+    getline(std::cin, input);
+    if (!input.empty()) {
+        std::stringstream ss(input);
+        char dummy;
+        int src, dst;
+
+        while (ss >> dummy && dummy == '(') {
+            if (ss >> src >> dummy >> dst >> dummy && dummy == ')') {
+                avoidSegments.emplace_back(src, dst);
+            }
+            ss >> dummy; // consume ',' between segments
+        }
+    }
+
+    EnvironmentallyFriendlyRouteResult result = planEnvironmentallyFriendlyRoute(origin, destination, maxWalkTime, avoidNodes, avoidSegments);
+    outputEnvironmentallyFriendlyRouteResult(result, std::cout);
+}
+
+// Function for batch mode environmental friendly route
+void planEnvironmentallyFriendlyRouteBatch() {
+    std::ifstream inputFile("../input.txt");
+    std::ofstream outputFile("../output.txt", std::ios::app); // Append mode
+
+    // Ensure input file exists
+    if (!inputFile.is_open()) {
+        std::cerr << "Error: Could not open input.txt\n";
+        return;
+    }
+
+    // Ensure output file exists (create if necessary)
+    if (!outputFile.is_open()) {
+        std::cerr << "Error: Could not open output.txt. Creating a new file...\n";
+        std::ofstream createFile("../output.txt");
+        if (!createFile) {
+            std::cerr << "Fatal error: Unable to create output.txt\n";
+            return;
+        }
+        createFile.close();
+        outputFile.open("../output.txt", std::ios::app); // Reopen for writing
+    }
+
+    std::string line;
+    int origin = -1, destination = -1, maxWalkTime = -1;
+    std::unordered_set<int> avoidNodes;
+    std::vector<std::pair<int, int>> avoidSegments;
+
+    while (std::getline(inputFile, line)) {
+        size_t pos = line.find(':');
+        if (pos == std::string::npos) {
+            std::cerr << "Invalid line format: " << line << std::endl;
+            continue;
+        }
+
+        std::string label = line.substr(0, pos);
+        std::string value = line.substr(pos + 1);
+
+        // Trim spaces
+        label.erase(0, label.find_first_not_of(" \t\r\n"));
+        label.erase(label.find_last_not_of(" \t\r\n") + 1);
+        value.erase(0, value.find_first_not_of(" \t\r\n"));
+        value.erase(value.find_last_not_of(" \t\r\n") + 1);
+
+        if (label == "Mode") {
+        }
+        else if (label == "Source") {
+            try {
+                origin = std::stoi(value);
+            } catch (...) {
+                std::cerr << "Error: Invalid source value: " << value << std::endl;
+            }
+        }
+        else if (label == "Destination") {
+            try {
+                destination = std::stoi(value);
+            } catch (...) {
+                std::cerr << "Error: Invalid destination value: " << value << std::endl;
+            }
+        }
+        else if (label == "MaxWalkTime") {
+            try {
+                maxWalkTime = std::stoi(value);
+            } catch (...) {
+                std::cerr << "Error: Invalid source value: " << value << std::endl;
+            }
+        }
+        else if (label == "AvoidNodes") {
+            if (!value.empty()) {
+                std::stringstream ss(value);
+                std::string node;
+                while (std::getline(ss, node, ',')) {
+                    try {
+                        avoidNodes.insert(std::stoi(node));
+                    } catch (...) {
+                        std::cerr << "Error: Invalid avoid node: " << node << std::endl;
+                    }
+                }
+            }
+        }
+        else if (label == "AvoidSegments") {
+            if (!value.empty()) {
+                std::stringstream ss(value);
+                char dummy;
+                int from, to;
+                while (ss >> dummy && dummy == '(') {
+                    if (ss >> from >> dummy >> to >> dummy && dummy == ')') {
+                        avoidSegments.emplace_back(from, to);
+                    }
+                    ss >> dummy;
+                }
+            }
+        }
+    }
+
+    EnvironmentallyFriendlyRouteResult result = planEnvironmentallyFriendlyRoute(origin, destination, maxWalkTime, avoidNodes, avoidSegments);
+    outputEnvironmentallyFriendlyRouteResult(result, outputFile);
+
+    inputFile.close();
+    outputFile.close();
+    }
 
 // Function for manual restricted route input
 void excludeNodesOrSegmentsMenu() {
@@ -158,7 +304,7 @@ void excludeNodesOrSegmentsMenu() {
 
 // Function for batch mode restricted route
 void excludeNodesOrSegmentsBatch() {
-        std::ifstream inputFile("../input.txt");
+    std::ifstream inputFile("../input.txt");
     std::ofstream outputFile("../output.txt", std::ios::app); // Append mode
 
     // Ensure input file exists
@@ -179,7 +325,7 @@ void excludeNodesOrSegmentsBatch() {
         outputFile.open("../output.txt", std::ios::app); // Reopen for writing
     }
 
-    std::string line, mode;
+    std::string line;
     int origin = -1, destination = -1, include = -1;
     std::unordered_set<int> avoidNodes;
     std::vector<std::pair<int, int>> avoidSegments;
@@ -200,8 +346,7 @@ void excludeNodesOrSegmentsBatch() {
         value.erase(0, value.find_first_not_of(" \t\r\n"));
         value.erase(value.find_last_not_of(" \t\r\n") + 1);
 
-        if (label == "Mode") {  // ✅ Now handling Mode properly
-            mode = value;
+        if (label == "Mode") {
         }
         else if (label == "Source") {
             try {
@@ -286,6 +431,23 @@ void handleFastestRouteOption() {
     }
 }
 
+// Handles the Environmentally Friendly route selection
+void handleEnvironmentallyFriendlyRouteOption() {
+    int subChoice = 0;
+    std::cout << "Environmentally Friendly Route: Choose input method:\n";
+    std::cout << "  1) Manual input (terminal)\n";
+    std::cout << "  2) Batch input (files)\n";
+    std::cout << "-> ";
+    std::cin >> subChoice;
+
+    if (subChoice == 1) {
+        planEnvironmentallyFriendlyRouteMenu();
+    } else if (subChoice == 2) {
+        planEnvironmentallyFriendlyRouteBatch();
+    } else {
+        std::cout << "Invalid sub-choice.\n";
+    }
+}
 // Handles the restricted route selection
 void handleRestrictedOption() {
     int subChoice = 0;
@@ -341,7 +503,7 @@ void handleMenuSelection() {
                 //planSecondFastestRoute();
                 break;
             case 3:
-                //planEnvironmentallyFriendlyRoute();
+                handleEnvironmentallyFriendlyRouteOption();
                 break;
             case 4:
                 handleRestrictedOption();
@@ -352,6 +514,7 @@ void handleMenuSelection() {
             case 6:
                 std::cout << "Exiting the program...\n";
                 break;
+            default: ;
         }
     }
 }

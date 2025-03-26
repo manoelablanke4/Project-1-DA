@@ -11,6 +11,22 @@
 #include "data_structures/MutablePriorityQueue.h"
 
 
+struct EnvironmentallyFriendlyRouteResult {
+    bool pathFound = false;
+
+    int origin = -1;
+    int destination = -1;
+    int parkingNode = -1;
+
+    std::vector<int> drivingPath;
+    std::vector<int> walkingPath;
+
+    double drivingTime = 0.0;
+    double walkingTime = 0.0;
+    double totalTime = 0.0;
+};
+
+
 // Forward-declare or include the classes and structures you need
 // e.g., if you have a "Location" struct/class somewhere, you can do:
 // #include "Location.h" 
@@ -103,5 +119,10 @@ std::vector<int> buildForwardPath(int startID, int endID, bool driving, double &
  * @return true if a suitable route was found, false otherwise.
  */
 bool ecoRoute(Graph<Location>& g, int originID, int destID, double maxWalkingTime, const std::unordered_set<int>& ignoreVertex, const std::vector<std::pair<int,int>>& avoidSegments);
+
+EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, int destination, int maxWalkTime, const std::unordered_set<int>& ignoreVertex,
+                                                                    const std::vector<std::pair<int, int>>& avoidSegments);
+
+void outputEnvironmentallyFriendlyRouteResult(const EnvironmentallyFriendlyRouteResult result, std::ostream& out);
 
 #endif // ECO_ROUTE_H
