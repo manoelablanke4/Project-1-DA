@@ -12,10 +12,23 @@ IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAlt
     Graph<Location> cityGraph;  // Single instance of the graph
     createMap(cityGraph);
 
+    IndependentRoutesResult result;
+
+    if (idmap.find(origin) == idmap.end()) {
+        result.origExists = false;
+    }
+    if ( idmap.find(destination) == idmap.end()) {
+        result.destExists = false;
+    }
+
+    if (result.origExists == false || result.destExists == false) {
+        return result;
+    }
+
     std::unordered_set<int> frstpath; // Stores the nodes that are part of the shortest path
     dijkstra(&cityGraph, origin, frstpath);
 
-    IndependentRoutesResult result;
+
     result.bestTime = 0;
     result.bestPath = getBestPath(&cityGraph, origin, destination, result.bestTime);
 
@@ -43,6 +56,10 @@ IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAlt
 void outputIndependentRouteResult(const IndependentRoutesResult& result, std::ostream& out, const int origin, const int destination) {
     out << "Source:" << origin << "\n";
     out << "Destination:" << destination << "\n";
+
+    if (!result.origExists){ out << "Origin ID is invalid! "  << "\n";return;}
+
+    if (!result.destExists){ out << "Destiny ID is invalid! "  << "\n";return;}
 
     if (!result.foundBest) {
         out << "No Path Found\n";

@@ -19,6 +19,21 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
 
     RestrictedRoutesResult result;
 
+    if (idmap.find(origin) == idmap.end()) {
+        result.origExists = false;
+    }
+    if ( idmap.find(destination) == idmap.end()) {
+        result.destExists = false;
+    }
+
+    if (idmap.find(include) == idmap.end()) {
+        result.includeExists = false;
+    }
+
+    if (result.origExists == false || result.destExists == false || result.includeExists == false) {
+        return result;
+    }
+
     // Ignore custom segments from 'avoidSegments'
     for (auto &seg : avoidSegments) {
         int fromID = seg.first;
@@ -89,6 +104,12 @@ void outputRestrictedRouteResult(const RestrictedRoutesResult& result, std::ostr
                                  int origin, int destination) {
     out << "Source:" << origin << "\n";
     out << "Destination:" << destination << "\n";
+
+    if (!result.origExists){ out << "Origin ID is invalid! "  << "\n";return;}
+
+    if (!result.destExists){ out << "Destiny ID is invalid! "  << "\n";return;}
+
+    if (!result.includeExists){ out << "Include ID is invalid! "  << "\n";return;}
 
     // Print Restricted Driving Route
     if (!result.bestPath.empty()) {

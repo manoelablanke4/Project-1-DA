@@ -4,6 +4,8 @@
 #include <iostream>
 
 struct IndependentRoutesResult {
+    bool origExists=true;
+    bool destExists=true;
     bool foundBest = false;
     bool foundAlt = false;
     double bestTime = 0.0;

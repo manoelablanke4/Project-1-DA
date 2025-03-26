@@ -6,6 +6,9 @@
 #include <iostream>
 
 struct RestrictedRoutesResult {
+    bool origExists=true;
+    bool destExists=true;
+    bool includeExists=true;
     bool pathFound = false;
     double bestTime = 0.0;
     std::vector<int> bestPath;
