@@ -325,7 +325,7 @@ void excludeNodesOrSegmentsBatch() {
         outputFile.open("../output.txt", std::ios::app); // Reopen for writing
     }
 
-    std::string line;
+    std::string line, mode;
     int origin = -1, destination = -1, include = -1;
     std::unordered_set<int> avoidNodes;
     std::vector<std::pair<int, int>> avoidSegments;
@@ -347,13 +347,13 @@ void excludeNodesOrSegmentsBatch() {
         value.erase(value.find_last_not_of(" \t\r\n") + 1);
 
         if (label == "Mode") {
+            mode = value;
         }
         else if (label == "Source") {
             try {
                 origin = std::stoi(value);
             } catch (...) {
                 std::cerr << "Error: Invalid source value: " << value << std::endl;
-                continue;
             }
         }
         else if (label == "Destination") {

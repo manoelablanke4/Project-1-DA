@@ -4,19 +4,10 @@
 #include <sstream>
 #include <unordered_map>
 #include "../include/data_structures/Graph.h"
+#include "../include/CreatingMap.h"
+#include "../include/Location.h"
 
 #define INF std::numeric_limits<double>::max()
-
-struct Location {
-    std::string name;
-    int id;
-    std::string code;
-    int parking;
-
-    bool operator==(const Location& other) const {
-        return id == other.id;
-    }
-};
 
 std::unordered_map<int,Vertex<Location>*> idmap;
 
@@ -36,7 +27,7 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
 
         if (std::getline(iss, name, ',') && std::getline(iss, id, ',') &&
             std::getline(iss, code, ',') && std::getline(iss, parking, ',')) {
-            Location location{name, std::stoi(id), code, std::stoi(parking)};
+            Location location{name, std::stoi(id), code, parking == "1"};
             map.addVertex(location);
             locations[code] = map.findVertex(location);  // Storing a pointer instead of a copy
             idmap[std::stoi(id)]=map.findVertex(location);

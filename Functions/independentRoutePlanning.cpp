@@ -2,9 +2,7 @@
 // Created by cosme on 11/03/2025.
 //
 #include <unordered_set>
-
 #include "..//include//CreatingMap.h"
-#include "..//include//data_structures/MutablePriorityQueue.h"
 #include "../include/IndependentRoutePlanning.h"
 #include "../include/RoutePlanningUtils.h"
 

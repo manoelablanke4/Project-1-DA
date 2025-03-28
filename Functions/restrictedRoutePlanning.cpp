@@ -4,10 +4,8 @@
 #include <unordered_set>
 
 #include "../include/CreatingMap.h"
-#include "../include/data_structures/MutablePriorityQueue.h"
 #include "../include/RestrictedRoutePlanning.h"
 #include "../include/RoutePlanningUtils.h"
-#include <algorithm>
 #include <iostream>
 
 RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,

@@ -1,6 +1,6 @@
 #include "../include/RoutePlanningUtils.h"
 
-bool relax(Edge<Location> *edge, bool driving, bool reverseNeeded, const std::unordered_set<int>& ignoreVertex){
+bool relax(Edge<Location>* edge, bool driving, bool reverseNeeded, const std::unordered_set<int>& ignoreVertex) {
     if (edge->getIgnored()) return false;
     int destID = edge->getDest()->getInfo().id;
     if (ignoreVertex.find(destID) != ignoreVertex.end()) return false;
@@ -19,20 +19,20 @@ bool relax(Edge<Location> *edge, bool driving, bool reverseNeeded, const std::un
         } else {
             dest->setPath(edge);
         }
-
         return true;
     }
     return false;
 }
 
-void dijkstra(Graph<Location> * g, const int &origin, bool driving, bool reverseNeeded, const std::unordered_set<int>& ignoreVertex) {
+// RoutePlanningUtils.cpp
+void dijkstra(const Graph<Location>* g, const int& origin, bool driving, bool reverseNeeded, const std::unordered_set<int>& ignoreVertex) {
     for (auto v : g->getVertexSet()) {
         v->setDist(INF);
         v->setPath(nullptr);
     }
-    Vertex<Location>* s = idmap[origin];
+    Vertex<Location>* s = idmap.at(origin);
     s->setDist(0);
-    if(ignoreVertex.find(origin) != ignoreVertex.end()) return;
+    if (ignoreVertex.find(origin) != ignoreVertex.end()) return;
 
     MutablePriorityQueue<Vertex<Location>> pq;
     pq.insert(s);
@@ -44,16 +44,14 @@ void dijkstra(Graph<Location> * g, const int &origin, bool driving, bool reverse
             if (e->getDriving() != INF && ignoreVertex.find(e->getDest()->getInfo().id) == ignoreVertex.end() && !e->getIgnored()) {
                 double oldDist = e->getDest()->getDist();
                 if (relax(e, driving, reverseNeeded, ignoreVertex)) {
-                    if (oldDist == INF) {
-                        pq.insert(e->getDest());
-                    } else {
-                        pq.decreaseKey(e->getDest());
-                    }
+                    if (oldDist == INF) pq.insert(e->getDest());
+                    else pq.decreaseKey(e->getDest());
                 }
             }
         }
     }
 }
+
 
 std::vector<int> getBestPath(Graph<Location>* g, const int& origin, const int& dest, double& time) {
     Vertex<Location>* d = idmap[dest];
@@ -63,14 +61,11 @@ std::vector<int> getBestPath(Graph<Location>* g, const int& origin, const int& d
 
     std::vector<int> res;
     res.push_back(d->getInfo().id);
-
     while (d->getPath() != nullptr) {
         time += d->getPath()->getDriving();
         d = d->getPath()->getOrig();
         res.push_back(d->getInfo().id);
     }
-
     std::reverse(res.begin(), res.end());
     return res;
 }
-
