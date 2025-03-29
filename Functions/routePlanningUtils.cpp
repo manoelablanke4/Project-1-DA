@@ -63,6 +63,7 @@ std::vector<int> getBestPath(Graph<Location>* g, const int& origin, const int& d
     res.push_back(d->getInfo().id);
     while (d->getPath() != nullptr) {
         time += d->getPath()->getDriving();
+        d->getPath()->setIgnored(true);
         d = d->getPath()->getOrig();
         res.push_back(d->getInfo().id);
     }

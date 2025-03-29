@@ -5,6 +5,8 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+
+#include "../include/CreatingMap.h"
 #include "../include/Menu.h"
 #include "../include/RestrictedRoutePlanning.h"
 #include "../include/IndependentRoutePlanning.h"
@@ -18,7 +20,6 @@ void planFastestRouteMenu() {
     std::cin >> origin;
     std::cout << "Enter the destination location ID: ";
     std::cin >> destination;
-
     IndependentRoutesResult result = planFastestRoute(origin, destination, true);
     outputIndependentRouteResult(result, std::cout, origin, destination);
 }
@@ -253,7 +254,6 @@ void excludeNodesOrSegmentsMenu() {
 
     std::cout << "Enter the destination location ID: ";
     std::cin >> destination;
-
     std::cin.ignore();
 
     // Nodes to avoid
