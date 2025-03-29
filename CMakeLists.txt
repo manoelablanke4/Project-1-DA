@@ -16,6 +16,8 @@ add_executable(MyGPS
         Functions/routePlanningUtils.cpp
         src/batchMode.cpp
         include/BatchMode.h
+        include/envFriendlyRoutePlanning.h
+        Functions/envFriendlyRoutePlanning.cpp
 )
 
 target_include_directories(MyGPS PRIVATE

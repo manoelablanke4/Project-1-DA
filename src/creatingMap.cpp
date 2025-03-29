@@ -4,19 +4,10 @@
 #include <sstream>
 #include <unordered_map>
 #include "../include/data_structures/Graph.h"
+#include "../include/CreatingMap.h"
+#include "../include/Location.h"
 
 #define INF std::numeric_limits<double>::max()
-
-struct Location {
-    std::string name;
-    int id;
-    std::string code;
-    int parking;
-
-    bool operator==(const Location& other) const {
-        return id == other.id;
-    }
-};
 
 std::unordered_map<int,Vertex<Location>*> idmap;
 

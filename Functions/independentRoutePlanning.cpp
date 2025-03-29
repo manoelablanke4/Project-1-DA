@@ -2,9 +2,7 @@
 // Created by cosme on 11/03/2025.
 //
 #include <unordered_set>
-
 #include "..//include//CreatingMap.h"
-#include "..//include//data_structures/MutablePriorityQueue.h"
 #include "../include/IndependentRoutePlanning.h"
 #include "../include/RoutePlanningUtils.h"
 
@@ -13,7 +11,7 @@ IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAlt
     createMap(cityGraph);
 
     std::unordered_set<int> frstpath; // Stores the nodes that are part of the shortest path
-    dijkstra(&cityGraph, origin, frstpath);
+    dijkstra(&cityGraph, origin, false, false, frstpath);
 
     IndependentRoutesResult result;
     result.bestTime = 0;
@@ -32,7 +30,7 @@ IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAlt
 
     if (doAltPath) {
         result.altTime = 0;
-        dijkstra(&cityGraph, origin, frstpath);
+        dijkstra(&cityGraph, origin, false, false, frstpath);
         result.altPath = getBestPath(&cityGraph, origin, destination, result.altTime);
         result.foundAlt = !result.altPath.empty(); // Set true if altPath exists
     }
