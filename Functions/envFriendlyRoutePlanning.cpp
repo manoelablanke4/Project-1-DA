@@ -116,12 +116,10 @@ EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, 
         if (dTime <= 1e-9 || wTime <= 1e-9) continue;
 
         double total = dTime + wTime;
-        std::cout << "total" << total << "\n";
         if (total < bestTotalTime || (std::fabs(total - bestTotalTime) < 1e-9 && wTime > bestWalkTime)) {
             bestTotalTime = total;
             bestWalkTime  = wTime;
             bestParking   = pid;
-            std::cout << "Best Parking Node: " << bestParking << "\n";
         }
     }
 
