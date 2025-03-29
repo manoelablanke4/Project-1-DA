@@ -8,7 +8,7 @@ struct Location {
     std::string name;
     int id;
     std::string code;
-    bool parking;
+    int parking;
 
     // Define operator==
     bool operator==(const Location& other) const {
@@ -17,7 +17,7 @@ struct Location {
 
     Location() = default;
 
-    Location(std::string name, int id, std::string code, bool parking)
+    Location(std::string name, int id, std::string code, int parking)
         : name(std::move(name)), id(id), code(std::move(code)), parking(parking) {}
 };
 

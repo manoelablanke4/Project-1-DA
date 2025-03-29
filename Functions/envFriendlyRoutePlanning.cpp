@@ -74,7 +74,6 @@ EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, 
                                                                     const std::vector<std::pair<int, int>>& avoidSegments) {
     Graph<Location> g;
     createMap(g);
-
     EnvironmentallyFriendlyRouteResult result;
     result.origin = origin;
     result.destination = destination;
@@ -102,8 +101,8 @@ EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, 
     double bestTotalTime = INF;
     double bestWalkTime = 0.0;
     int bestParking = -1;
-
     for (auto v : g.getVertexSet()) {
+
         if (v->getInfo().parking != 1) continue;
         int pid = v->getInfo().id;
         if (ignoreVertex.find(pid) != ignoreVertex.end()) continue;
@@ -117,10 +116,12 @@ EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, 
         if (dTime <= 1e-9 || wTime <= 1e-9) continue;
 
         double total = dTime + wTime;
+        std::cout << "total" << total << "\n";
         if (total < bestTotalTime || (std::fabs(total - bestTotalTime) < 1e-9 && wTime > bestWalkTime)) {
             bestTotalTime = total;
             bestWalkTime  = wTime;
             bestParking   = pid;
+            std::cout << "Best Parking Node: " << bestParking << "\n";
         }
     }
 

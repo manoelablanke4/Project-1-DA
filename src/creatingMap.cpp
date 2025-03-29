@@ -27,7 +27,7 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
 
         if (std::getline(iss, name, ',') && std::getline(iss, id, ',') &&
             std::getline(iss, code, ',') && std::getline(iss, parking, ',')) {
-            Location location{name, std::stoi(id), code, parking == "1"};
+            Location location{name, std::stoi(id), code, std::stoi(parking)};
             map.addVertex(location);
             locations[code] = map.findVertex(location);  // Storing a pointer instead of a copy
             idmap[std::stoi(id)]=map.findVertex(location);
