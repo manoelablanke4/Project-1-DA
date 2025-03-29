@@ -17,6 +17,7 @@ struct IndependentRoutesResult {
 IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAltPath);
 
 // Function to print or write the route result
-void outputIndependentRouteResult(const IndependentRoutesResult& result, std::ostream& out, int origin, int destination);
+void outputIndependentRouteResult(const IndependentRoutesResult& result,
+                                    std::ostream& out, int origin, int destination);
 
 #endif // INDEPENDENT_ROUTE_PLANNING_H

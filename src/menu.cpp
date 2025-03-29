@@ -294,7 +294,9 @@ void excludeNodesOrSegmentsMenu() {
     // Check if user wants any restriction
     if (avoidNodes.empty() && avoidSegments.empty() && include == -1) {
         // No restrictions, plan the fastest route
-        planFastestRoute(origin, destination, false);
+        RestrictedRoutesResult result = excludeNodesOrSegments(origin, destination, avoidNodes, avoidSegments, include);
+        outputRestrictedRouteResult(result, std::cout, origin, destination);
+
     } else {
         // With restrictions
         RestrictedRoutesResult result = excludeNodesOrSegments(origin, destination, avoidNodes, avoidSegments, include);
