@@ -61,8 +61,8 @@ protected:
     bool processing = false; // used by isDAG (in addition to the visited attribute)
     int low = -1, num = -1; // used by SCC Tarjan
     unsigned int indegree; // used by topsort
-    double dist = 0;
-    double walkdist = 0;
+    double dist = 0;      //driving dist
+    double walkdist = 0; //walking dist
     Edge<T> *path = nullptr;
 
     std::vector<Edge<T> *> incoming; // incoming edges
@@ -95,7 +95,7 @@ protected:
     Vertex<T> * dest; // destination vertex
 
 
-    double driving;// edge driving, can also be used for capacity
+    double driving;// edge driving time, can also be used for capacity
 
     double walking;//edge walking time
 

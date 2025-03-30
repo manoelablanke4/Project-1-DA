@@ -24,7 +24,7 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
         result.destExists = false;
     }
 
-    if (idmap.find(include) == idmap.end()) {
+    if (idmap.find(include) == idmap.end() && include!=-1) {
         result.includeExists = false;
     }
 

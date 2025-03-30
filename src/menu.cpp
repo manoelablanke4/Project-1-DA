@@ -294,7 +294,9 @@ void excludeNodesOrSegmentsMenu() {
     // Check if user wants any restriction
     if (avoidNodes.empty() && avoidSegments.empty() && include == -1) {
         // No restrictions, plan the fastest route
-        planFastestRoute(origin, destination, false);
+        RestrictedRoutesResult result = excludeNodesOrSegments(origin, destination, avoidNodes, avoidSegments, include);
+        outputRestrictedRouteResult(result, std::cout, origin, destination);
+
     } else {
         // With restrictions
         RestrictedRoutesResult result = excludeNodesOrSegments(origin, destination, avoidNodes, avoidSegments, include);
@@ -471,27 +473,25 @@ void showMainMenu() {
     std::cout << "### Welcome to the Route Planning Tool! ###" << std::endl;
     std::cout << "Please choose an option from the following:" << std::endl;
     std::cout << "[1] Plan the fastest route from a starting location to a destination." << std::endl;
-    std::cout << "[2] Plan the second-fastest route from a starting location to a destination." << std::endl;
+    std::cout << "[2] Exclude specific locations or segments from the route calculation." << std::endl;
     std::cout << "[3] Plan an environmentally-friendly route that combines driving and walking (with parking options)." << std::endl;
-    std::cout << "[4] Exclude specific locations or segments from the route calculation." << std::endl;
-    std::cout << "[5] Display detailed route information (e.g., time, path, nodes)." << std::endl;
-    std::cout << "[6] Exit the program." << std::endl;
+    std::cout << "[4] Exit the program." << std::endl;
     std::cout << "=================================================================================================" << std::endl;
     std::cout << "-> ";
 }
 
 void handleMenuSelection() {
     int choice = 0;
-    while (choice != 6) {
+    while (choice != 4) {
         showMainMenu();
-        std::cout << "Enter your choice (1-6): ";
+        std::cout << "Enter your choice (1-4): ";
 
         std::cin >> choice;
 
-        if (std::cin.fail() || choice < 1 || choice > 6) {
+        if (std::cin.fail() || choice < 1 || choice > 4) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid choice, please select a valid option from 1 to 6.\n";
+            std::cout << "Invalid choice, please select a valid option from 1 to 4.\n";
             continue;
         }
 
@@ -500,18 +500,12 @@ void handleMenuSelection() {
                 handleFastestRouteOption();
                 break;
             case 2:
-                //planSecondFastestRoute();
+                handleRestrictedOption();
                 break;
             case 3:
                 handleEnvironmentallyFriendlyRouteOption();
                 break;
             case 4:
-                handleRestrictedOption();
-                break;
-            case 5:
-                //displayRouteInfo();
-                break;
-            case 6:
                 std::cout << "Exiting the program...\n";
                 break;
             default: ;
