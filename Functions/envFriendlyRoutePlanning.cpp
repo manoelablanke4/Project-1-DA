@@ -1,8 +1,20 @@
+/**
+ * @file envFriendlyRoutePlanning.cpp
+ * @brief Implements environmentally friendly route planning combining driving and walking.
+ *
+ * Finds a parking location that minimizes the total travel time while respecting walking time constraints.
+ */
+
 #include "../include/envFriendlyRoutePlanning.h"
 #include "../include/RoutePlanningUtils.h"
 #include <cmath>
 #include <algorithm>
 
+/**
+ * @brief Marks the specified edges (segments) as ignored in the graph.
+ * 
+ * @param avoidSegments A list of pairs representing edges to ignore (fromID, toID).
+ */
 void markIgnoredEdges(const std::vector<std::pair<int,int>>& avoidSegments) {
     for (auto &seg : avoidSegments) {
         int fromID = seg.first;
@@ -17,6 +29,16 @@ void markIgnoredEdges(const std::vector<std::pair<int,int>>& avoidSegments) {
     }
 }
 
+/**
+ * @brief Builds the driving path in reverse from end to start, using a path map.
+ *
+ * @param startID Origin node ID.
+ * @param endID Destination node ID.
+ * @param driving True if driving path, false if walking.
+ * @param accTime Reference to accumulate total travel time.
+ * @param pathMap Map of node IDs to edges used to reach them.
+ * @return Vector with the sequence of node IDs from start to end (reversed).
+ */
 std::vector<int> buildBackwardPath(int startID, int endID, bool driving, double &accTime, const std::unordered_map<int, Edge<Location>*>& pathMap) {
     std::vector<int> path;
     int currentID = endID;
@@ -43,6 +65,16 @@ std::vector<int> buildBackwardPath(int startID, int endID, bool driving, double 
     return path;
 }
 
+/**
+ * @brief Builds the walking path from start to end, using a path map.
+ *
+ * @param startID Starting node ID (e.g., parking).
+ * @param endID Destination node ID.
+ * @param driving False for walking path.
+ * @param accTime Reference to accumulate total walking time.
+ * @param pathMap Map of node IDs to edges used to reach them.
+ * @return Vector with the sequence of node IDs from start to end.
+ */
 std::vector<int> buildForwardPath(int startID, int endID, bool driving, double &accTime, const std::unordered_map<int, Edge<Location>*>& pathMap) {
     std::vector<int> path;
     int currentID = startID;
@@ -69,6 +101,19 @@ std::vector<int> buildForwardPath(int startID, int endID, bool driving, double &
     return path;
 }
 
+/**
+ * @brief Plans an environmentally friendly route with parking and walking, respecting max walking time.
+ * 
+ * Tries all valid parking nodes and selects the one with the shortest total time,
+ * preferring longer walks if time is equal.
+ *
+ * @param origin Origin node ID.
+ * @param destination Destination node ID.
+ * @param maxWalkTime Maximum allowed walking time from parking to destination.
+ * @param ignoreVertex Set of node IDs to avoid.
+ * @param avoidSegments Set of edges to avoid.
+ * @return A structure containing the driving path, walking path, total time, and parking location.
+ */
 EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, int destination, int maxWalkTime,
                                                                     const std::unordered_set<int>& ignoreVertex,
                                                                     const std::vector<std::pair<int, int>>& avoidSegments) {
@@ -147,6 +192,15 @@ EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, 
     return result;
 }
 
+/**
+ * @brief Outputs the environmentally friendly route result to a stream (e.g., std::cout or file).
+ * 
+ * Includes driving path, parking node, walking path, and total time.
+ * Prints fallback messages if no valid route was found.
+ * 
+ * @param result Struct containing the route result.
+ * @param out Output stream to write to.
+ */
 void outputEnvironmentallyFriendlyRouteResult(const EnvironmentallyFriendlyRouteResult& result, std::ostream& out) {
     out << "Source:" << result.origin << "\n";
     out << "Destination:" << result.destination << "\n";

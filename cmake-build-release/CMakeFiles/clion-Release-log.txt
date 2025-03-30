@@ -1,0 +1,4 @@
+/root/.cache/JetBrains/RemoteDev/dist/7e91c9460ef4d_CLion-251.23774.202/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" -S /root/CLionProjects/Project-1-DA -B /root/CLionProjects/Project-1-DA/cmake-build-release
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /root/CLionProjects/Project-1-DA/cmake-build-release

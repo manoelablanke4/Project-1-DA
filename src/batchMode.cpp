@@ -1,3 +1,8 @@
+/**
+ * @file BatchMode.cpp
+ * @brief Implements functionality to run route planning in batch mode using input/output files.
+ */
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -7,6 +12,15 @@
 #include "../include/IndependentRoutePlanning.h"
 #include "../include/RestrictedRoutePlanning.h"
 
+/**
+ * @brief Reads input data from a file, parses route options, and writes the result to an output file.
+ *
+ * Determines whether to run independent route planning (no restrictions) or restricted route planning
+ * based on the parsed fields from the input file.
+ *
+ * @param inputFile Path to the input file containing batch route instructions.
+ * @param outputFile Path to the output file where results will be written.
+ */
 void processInputFile(const std::string& inputFile, const std::string& outputFile) {
     std::ifstream in(inputFile);
     std::ofstream out(outputFile, std::ios::out | std::ios::trunc); // Create/overwrite file
@@ -79,14 +93,12 @@ void processInputFile(const std::string& inputFile, const std::string& outputFil
 
     in.close();
 
-    // **Determine which function to call**
+    // Determine which function to call based on input data
     if (avoidNodes.empty() && avoidSegments.empty() && includeNode == -1) {
-        // No restrictions → Call `planFastestRoute`
         std::cout << "Calling Independent Route Planning...\n";
         IndependentRoutesResult result = planFastestRoute(origin, destination, true);
         outputIndependentRouteResult(result, out, origin, destination);
     } else {
-        // Restrictions exist → Call `excludeNodesOrSegments`
         std::cout << "Calling Restricted Route Planning...\n";
         RestrictedRoutesResult result = excludeNodesOrSegments(origin, destination, avoidNodes, avoidSegments, includeNode);
         outputRestrictedRouteResult(result, out, origin, destination);
@@ -95,7 +107,15 @@ void processInputFile(const std::string& inputFile, const std::string& outputFil
     out.close();
 }
 
-void runBatchMode(const std::string& inputFile, const std::string& outputFile = "output.txt") {
+/**
+ * @brief Launches batch mode route planning using an input file and optional output file.
+ *
+ * Validates the input file and triggers the processing of instructions.
+ *
+ * @param inputFile Path to the input file with route instructions.
+ * @param outputFile Path to the output file (default is "output.txt").
+ */
+void runBatchMode(const std::string& inputFile, const std::string& outputFile) {
     std::ifstream in(inputFile);
     if (!in.is_open()) {
         std::cerr << "Error: Cannot open input file: " << inputFile << "\n";
@@ -103,6 +123,6 @@ void runBatchMode(const std::string& inputFile, const std::string& outputFile = 
     }
     in.close();
 
-    // Call processInputFile to read, process, and generate the output
+    // Process the input file and write the result
     processInputFile(inputFile, outputFile);
 }

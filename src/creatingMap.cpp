@@ -1,3 +1,10 @@
+/**
+ * @file CreatingMap.cpp
+ * @brief Builds the graph structure from input files containing location and distance data.
+ *
+ * Parses data from files and adds vertices and edges to the graph.
+ */
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -9,10 +16,21 @@
 
 #define INF std::numeric_limits<double>::max()
 
-std::unordered_map<int,Vertex<Location>*> idmap;
+/**
+ * @brief Global map from location IDs to their corresponding graph vertices.
+ */
+std::unordered_map<int, Vertex<Location>*> idmap;
 
+/**
+ * @brief Reads location data from a file and populates the graph with vertices.
+ * 
+ * Each location is inserted into the graph and stored in a map for reference by code and ID.
+ *
+ * @param map Reference to the graph to populate.
+ * @param locations Map to store references to created vertices using their string codes.
+ */
 void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream LocationsFile("../data/LocSample.txt");
+    std::ifstream LocationsFile("../data/Locations.csv");
     if (!LocationsFile.is_open()) {
         std::cerr << "Error opening Locations.csv" << std::endl;
         exit(1);
@@ -30,14 +48,23 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
             Location location{name, std::stoi(id), code, std::stoi(parking)};
             map.addVertex(location);
             locations[code] = map.findVertex(location);  // Storing a pointer instead of a copy
-            idmap[std::stoi(id)]=map.findVertex(location);
+            idmap[std::stoi(id)] = map.findVertex(location);
         }
     }
+
     LocationsFile.close();
 }
 
+/**
+ * @brief Reads distance data from a file and adds bidirectional edges to the graph.
+ * 
+ * For each entry, edges are added between the corresponding locations with driving and walking times.
+ *
+ * @param map Reference to the graph to populate.
+ * @param locations Map containing references to existing vertices (from `readLocations`).
+ */
 void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations) {
-    std::ifstream DistancesFile("../data/DisSample.txt");
+    std::ifstream DistancesFile("../data/Distances.csv");
     if (!DistancesFile.is_open()) {
         std::cerr << "Error opening Distances.csv" << std::endl;
         exit(1);
@@ -56,22 +83,23 @@ void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<
             double driveTime = (driving == "X") ? INF : std::stod(driving);
             double walkTime = std::stod(walking);
 
-            // Retrieving pointers to real vertices instead of copies
             Vertex<Location>* src = locations[source];
             Vertex<Location>* dest = locations[destination];
 
             if (src && dest) {
-
                 map.addBidirectionalEdge(src->getInfo(), dest->getInfo(), driveTime, walkTime);
             }
         }
     }
 
-
     DistancesFile.close();
 }
 
-// Graph is now passed by reference to avoid creating multiple instances
+/**
+ * @brief Initializes the full graph by reading both locations and distances from files.
+ * 
+ * @param map Graph reference to be filled with vertices and edges.
+ */
 void createMap(Graph<Location>& map) {
     std::unordered_map<std::string, Vertex<Location>*> locations;
 

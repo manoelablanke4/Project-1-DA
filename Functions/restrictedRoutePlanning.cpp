@@ -1,6 +1,8 @@
-//
-// Created by cosme on 13/03/2025.
-//
+/**
+ * @file RestrictedRoutePlanning.cpp
+ * @brief Calculates the fastest route with restrictions on nodes, segments, and optional inclusion of a specific node.
+ */
+
 #include <unordered_set>
 
 #include "../include/CreatingMap.h"
@@ -8,6 +10,18 @@
 #include "../include/RoutePlanningUtils.h"
 #include <iostream>
 
+/**
+ * @brief Calculates a restricted route between origin and destination.
+ *
+ * The route can exclude certain nodes and segments and optionally include a required node.
+ *
+ * @param origin ID of the starting location.
+ * @param destination ID of the target location.
+ * @param ignoreVertex Set of node IDs to avoid.
+ * @param avoidSegments List of directed edges to avoid (pairs of node IDs).
+ * @param include Node ID that must be included in the path (-1 if none).
+ * @return A RestrictedRoutesResult containing the best path found and related info.
+ */
 RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
                                              const std::unordered_set<int>& ignoreVertex,
                                              const std::vector<std::pair<int, int>>& avoidSegments,
@@ -97,7 +111,16 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
     return result;
 }
 
-
+/**
+ * @brief Outputs the result of a restricted route calculation to a stream.
+ *
+ * Prints the source and destination IDs, any errors, and the computed restricted route if available.
+ *
+ * @param result The result struct containing route information.
+ * @param out Output stream (e.g. std::cout or ofstream).
+ * @param origin The origin location ID.
+ * @param destination The destination location ID.
+ */
 void outputRestrictedRouteResult(const RestrictedRoutesResult& result, std::ostream& out,
                                  int origin, int destination) {
     out << "Source:" << origin << "\n";
