@@ -77,6 +77,16 @@ EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, 
     EnvironmentallyFriendlyRouteResult result;
     result.origin = origin;
     result.destination = destination;
+    if (idmap.find(origin) == idmap.end()) {
+        result.origExists = false;
+    }
+    if ( idmap.find(destination) == idmap.end()) {
+        result.destExists = false;
+    }
+
+    if (result.origExists == false || result.destExists == false) {
+        return result;
+    }
 
     markIgnoredEdges(avoidSegments);
 

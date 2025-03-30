@@ -13,6 +13,8 @@ struct EnvironmentallyFriendlyRouteResult {
     int origin = -1;
     int destination = -1;
     int parkingNode = -1;
+    bool origExists = true;
+    bool destExists = true;
 
     std::vector<int> drivingPath;
     std::vector<int> walkingPath;
