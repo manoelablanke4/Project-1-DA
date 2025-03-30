@@ -37,6 +37,7 @@ struct EnvironmentallyFriendlyRouteResult {
  * @brief Marks edges (segments) in the graph as ignored based on the input list.
  *
  * @param avoidSegments List of edges (fromID, toID) to mark as ignored.
+ * @note **Time Complexity:** O(S), S = number of segments to ignore.
  */
 void markIgnoredEdges(const std::vector<std::pair<int,int>>& avoidSegments);
 
@@ -49,6 +50,7 @@ void markIgnoredEdges(const std::vector<std::pair<int,int>>& avoidSegments);
  * @param accTime Reference to store the accumulated time.
  * @param pathMap Map of node IDs to edges representing the path.
  * @return A list of node IDs representing the path from start to end.
+ * @note **Time Complexity:** O(P), path length.
  */
 std::vector<int> buildBackwardPath(int startID, int endID, bool driving, double &accTime, const std::unordered_map<int, Edge<Location>*>& pathMap);
 
@@ -61,6 +63,7 @@ std::vector<int> buildBackwardPath(int startID, int endID, bool driving, double 
  * @param accTime Reference to store the accumulated time.
  * @param pathMap Map of node IDs to edges representing the path.
  * @return A list of node IDs representing the path from start to end.
+ * @note **Time Complexity:** O(P), path length.
  */
 std::vector<int> buildForwardPath(int startID, int endID, bool driving, double &accTime, const std::unordered_map<int, Edge<Location>*>& pathMap);
 
@@ -75,6 +78,7 @@ std::vector<int> buildForwardPath(int startID, int endID, bool driving, double &
  * @param ignoreVertex Set of node IDs to avoid.
  * @param avoidSegments List of directed segments to avoid.
  * @return A structure containing the full route result.
+ * @note **Time Complexity:** O((N + M) log N), N = nodes, M = edges.
  */
 EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, int destination, int maxWalkTime,
                                                                     const std::unordered_set<int>& ignoreVertex,
@@ -85,6 +89,7 @@ EnvironmentallyFriendlyRouteResult planEnvironmentallyFriendlyRoute(int origin, 
  *
  * @param result Struct containing the route information.
  * @param out Output stream (e.g. std::cout or file).
+ * @note **Time Complexity:** O(N), number of nodes in route.
  */
 void outputEnvironmentallyFriendlyRouteResult(const EnvironmentallyFriendlyRouteResult& result, std::ostream& out);
 

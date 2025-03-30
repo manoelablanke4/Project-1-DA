@@ -26,6 +26,7 @@ extern std::unordered_map<int, Vertex<Location>*> idmap;
  *
  * @param map Graph to populate with location vertices.
  * @param locations Map to store references to vertices using location codes.
+ * @note **Time Complexity:** O(N), where N is number of locations.
  */
 void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations);
 
@@ -36,6 +37,7 @@ void readLocations(Graph<Location>& map, std::unordered_map<std::string, Vertex<
  *
  * @param map Graph to populate with edges.
  * @param locations Map of location codes to existing vertex pointers.
+ * @note **Time Complexity:** O(M), where M is number of distance entries.
  */
 void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<Location>*>& locations);
 
@@ -45,6 +47,7 @@ void readDistances(Graph<Location>& map, std::unordered_map<std::string, Vertex<
  * This is the main entry point to initialize the graph using location and distance files.
  *
  * @param map Graph object to initialize.
+ * @note **Time Complexity:** O(N + M), total locations plus distances.
  */
 void createMap(Graph<Location>& map);
 

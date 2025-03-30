@@ -34,6 +34,7 @@ bool relax(Edge<Location> *edge, bool driving, bool reverseNeeded, const std::un
  * @param driving True to use driving times; false to use walking times.
  * @param reverseNeeded True if walking path reconstruction needs reverse edge tracking.
  * @param ignoreVertex Set of vertex IDs to be ignored during computation.
+ * @note **Time Complexity:** O((V + E) log V), where V is number of vertices and E is number of edges.
  */
 void dijkstra(const Graph<Location>* g, const int &origin, bool driving, bool reverseNeeded, const std::unordered_set<int>& ignoreVertex);
 

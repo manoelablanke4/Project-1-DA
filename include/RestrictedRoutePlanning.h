@@ -34,6 +34,7 @@ struct RestrictedRoutesResult {
  * @param avoidSegments List of directed edges to be avoided.
  * @param include Optional node ID that must be included in the route (-1 if none).
  * @return A RestrictedRoutesResult containing the path and metadata.
+ * @note **Time Complexity:** O((N + M) log N), where N = nodes, M = edges.
  */
 RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
                                               const std::unordered_set<int>& ignoreVertex,
@@ -49,6 +50,7 @@ RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
  * @param out Output stream to write to (e.g., std::cout or std::ofstream).
  * @param origin ID of the origin node.
  * @param destination ID of the destination node.
+ * @note **Time Complexity:** O(N), where N = number of nodes in path.
  */
 void outputRestrictedRouteResult(const RestrictedRoutesResult& result, std::ostream& out, int origin, int destination);
 

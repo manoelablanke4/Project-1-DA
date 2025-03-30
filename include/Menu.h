@@ -12,32 +12,22 @@
 
 /**
  * @brief Starts the interactive menu loop, allowing the user to select route planning options.
+ * @note **Time Complexity:** O((N + M) log N), governed by route-planning algorithms.
  */
 void handleMenuSelection();
 
 /**
- * @brief Plans the fastest route between two locations using Dijkstra's algorithm.
+ * @brief Handles manual input to compute the fastest route.
  *
- * @param origin The ID of the origin location.
- * @param destination The ID of the destination location.
- * @param doAltPath Whether to also calculate the second-fastest path (if true).
- * @return IndependentRoutesResult containing the calculated route and metadata.
+ * @note **Time Complexity:** O((N + M) log N), due to internal Dijkstra algorithm calls.
  */
-IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAltPath);
+void planFastestRouteMenu();
 
 /**
- * @brief Plans a route between two locations, excluding specific nodes and/or segments, and optionally including a required node.
+ * @brief Handles batch mode input from files to compute fastest routes.
  *
- * @param origin The ID of the origin location.
- * @param destination The ID of the destination location.
- * @param ignoreVertex Set of nodes to avoid.
- * @param avoidSegments List of segments (edges) to avoid.
- * @param include Optional node that must be included in the route (-1 if none).
- * @return RestrictedRoutesResult containing the calculated restricted route and metadata.
+ * @note **Time Complexity:** O(L + (N + M) log N), L is input file lines.
  */
-RestrictedRoutesResult excludeNodesOrSegments(int origin, int destination,
-                                              const std::unordered_set<int>& ignoreVertex,
-                                              const std::vector<std::pair<int, int>>& avoidSegments,
-                                              int include);
+void planFastestRouteBatch();
 
 #endif // MENU_H

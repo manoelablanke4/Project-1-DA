@@ -33,6 +33,7 @@ struct IndependentRoutesResult {
  * @param destination The ID of the destination location.
  * @param doAltPath If true, also calculates the alternative route.
  * @return A struct containing the results of the route calculation.
+ * @note **Time Complexity:** O((N + M) log N), where N = nodes, M = edges.
  */
 IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAltPath);
 
@@ -43,6 +44,7 @@ IndependentRoutesResult planFastestRoute(int origin, int destination, bool doAlt
  * @param out Output stream (e.g., std::cout or file stream).
  * @param origin The ID of the origin location.
  * @param destination The ID of the destination location.
+ * @note **Time Complexity:** O(N), where N = nodes in the route.
  */
 void outputIndependentRouteResult(const IndependentRoutesResult& result,
                                    std::ostream& out, int origin, int destination);
