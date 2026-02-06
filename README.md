@@ -1,4 +1,5 @@
-# Urban Navigation Path-Planning Tool - Project 1 DA
+# Urban Navigation Path-Planning Tool - Project 1 Design of Algorithms
+
 
 ## **Group Members**
 - Cosme José Pinheiro de Sousa - up202305463
@@ -7,60 +8,124 @@
 
 ---
 
-## Project Overview
-
-This project aims to develop a path-planning tool to assist with urban navigation, similar to GPS-based systems like Google Maps, with an emphasis on environmentally sustainable and resilient mobility alternatives. The tool is designed to provide various functionalities that enhance urban mobility, such as:
-
-- **Fastest Route**: Identifying the fastest route to the destination.
-- **Second-Fastest Independent Route**: Providing an alternative route that is independent from the fastest route.
-- **Restricted Route Planning**: Supporting the planning of routes that exclude specific nodes or segments.
-- **Environmentally-Friendly Routes**: Generating routes that combine driving and walking, including parking options, to reduce environmental impact.
-
-The tool also accommodates constraints such as the unavailability of certain routes, ensuring practical and versatile solutions for diverse mobility needs. The ultimate goal of the project is to deliver a navigation system that prioritizes both efficiency and sustainability in urban mobility.
+A C++ path-planning system for urban navigation, inspired by GPS routing software.  
+The project computes optimal and constrained routes on a graph representing an urban road network, supporting multiple real-world routing scenarios such as road restrictions and environmentally-friendly mobility.
 
 ---
 
-## 🛍️ How to Use the Program
+## ✨ Features
 
-### 🔘 Menu Mode (Interactive)
+- **Fastest Route Computation**  
+  Computes the shortest / fastest path between a source and a destination.
 
-If you **run the program without arguments**, it will launch an interactive **menu** in the terminal:
+- **Alternative Route Generation**  
+  Finds an independent alternative route to the fastest path when applicable.
 
-```bash
-./your_program
-```
+- **Restricted Routing**  
+  Supports routing while avoiding:
+  - Specific nodes (e.g., blocked intersections)
+  - Specific edges or road segments (e.g., closed streets)
 
-You’ll be able to:
-1. Plan the fastest route
-2. Plan a restricted route (avoid nodes or segments)
-3. Plan an environmentally-friendly route (with parking and walking)
-4. Exit the program
+- **Environmentally-Friendly Routing**  
+  Supports combined **driving + parking + walking** routes to reduce environmental impact.
 
-> ⚠️ **Important:** The output file is only updated when you **exit the program (option 4)**. Make sure to finish your session to write the results.
-
-> ℹ️ **Note:** After selecting the route type (option 1, 2, or 3), you can choose **option 2** to use an input file. The file must be named `input.txt` and placed at the **root directory** of the project. It will automatically generate or update `output.txt`.
+The system is built around classic **graph algorithms** and mirrors the logic of real navigation systems such as Google Maps.
 
 ---
 
-### ⚙️ Batch Mode (Automated Input)
+## 🧱 Project Structure
 
-You can run the program in **batch mode** by giving one or two arguments:
+- `src/` – Main source code
+- `include/` – Header files
+- `Functions/` – Auxiliary functions and routing logic
+- `data/` – Graph and dataset files
+- `CMakeLists.txt` – Build configuration
 
-#### 1. Only input file:
+---
+
+## ✅ Requirements
+
+- **CMake** (version 3.15 or higher recommended)
+- **C++17 compatible compiler** (`g++`, `clang++`, etc.)
+- Linux or macOS (Windows via WSL or a CMake-compatible environment)
+
+---
+
+## 🔧 Build Instructions
+
+From the project root:
+
 ```bash
-./your_program input.txt
-```
-- The program immediately reads the instructions from `input.txt`.
-- The results are written to a file named `output.txt` (created or overwritten if it exists).
+mkdir -p build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 
-#### 2. Input file + output file:
+## ▶️ How to Run
+
+The program supports **two execution modes**:
+
+- Interactive menu mode  
+- Batch (file-based) mode  
+
+After building the project, the executable will be located inside the `build/` directory.
+
+---
+
+### Interactive Menu Mode
+
+Run the program **without arguments**:
+
 ```bash
-./your_program input.txt custom_output.txt
+./build/<executable>
 ```
-- The program reads from `input.txt` and writes the results to `custom_output.txt`.
 
-> ℹ️ **Batch mode only supports**:
-- **Fastest route** (Independent Route Planning)
+This launches a terminal-based menu where the user can:
+
+1. Compute the fastest route between two nodes  
+2. Compute a restricted route (avoiding specific nodes or edges)  
+3. Compute an environmentally-friendly route (driving + parking + walking)  
+4. Exit the program  
+
+**Important notes:**
+
+- The output file is only updated when the program is exited using option **4**.
+- From the menu, it is possible to load commands from an `input.txt` file located in the project root.
+- When using an input file through the menu, results are written to `output.txt`.
+
+---
+
+### Batch Mode (Using an Input File)
+
+Batch mode executes routing commands directly from a file without user interaction.
+
+#### Input file only (default output)
+
+```bash
+./build/<executable> input.txt
+```
+
+- Reads routing instructions from `input.txt`
+- Writes results to `output.txt` (created or overwritten)
+
+#### Input file with custom output file
+
+```bash
+./build/<executable> input.txt custom_output.txt
+```
+
+- Reads routing instructions from `input.txt`
+- Writes results to `custom_output.txt`
+
+**Notes:**
+
+- Batch mode supports the **fastest route** and **restricted route** scenarios.
+- The file `input.txt` must be located in the **project root directory**.
+
+
+
+
+
+
 - **Restricted route** (with nodes or segments to avoid)
 
 > ⚠️ **Reminder:** The input file must be located at the **project root directory**.
